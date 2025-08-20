@@ -3,19 +3,25 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mzhou <mzhou@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mizhouis <mizhouis@gmail.com>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/20 16:47:02 by mzhou             #+#    #+#             */
-/*   Updated: 2025/08/20 16:47:32 by mzhou            ###   ########.fr       */
+/*   Created: 2025/08/20 20:59:29 by mizhouis          #+#    #+#             */
+/*   Updated: 2025/08/20 20:59:29 by mizhouis         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+/**
+ * @file utils.c
+ * @brief utils helper function
+ */
+
 #include "../includes/philo.h"
 
-/** get lenth of a string.
-* @param str: the string
-* @return lenth of the string
-*/
+/**
+ * @brief get string length.
+ * @param str string.
+ * @return length.
+ */
 int	ft_strlen(char *str)
 {
 	int	i;
@@ -26,9 +32,10 @@ int	ft_strlen(char *str)
 	return (i);
 }
 
-/** get lenth of a string.
-* @param str: the string
-* @return lenth of the string
+/**
+* @brief print error message on stderr.
+* @param msg: error message to print.
+* @return EXIT_SUCCESS or EXIT_FAILURE.
 */
 int	error_quit(char *msg)
 {
