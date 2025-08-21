@@ -19,7 +19,7 @@ static bool	is_numeric(char *str)
 	i = 0;
 	while (str[i])
 	{
-		if (str[i] < 0 || str[i] > 9)
+		if (str[i] < 48 || str[i] > 57)
 			return (false);
 		i++;
 	}
@@ -39,7 +39,7 @@ static bool	is_int(char *str)
 
 	if (is_numeric(str) == true)
 	{
-		num = ft_atoi(str);
+		num = ft_atol(str);
 		if (num >= 0 && num <= INT_MAX)
 			return (true);
 	}
@@ -52,11 +52,11 @@ bool	is_valid_args(int argc, char **argv)
 
 	i = 0;
 	if (argc != 5 && argc != 6)
-		return (error_quit(ARGS_ERROR), false);
+		return (false);
 	while (argv[i])
 	{
 		if (is_int(argv[i]) == false)
-			return (error_quit(ARGS_ERROR), false);
+			return (false);
 		i++;
 	}
 	return (true);
