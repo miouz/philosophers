@@ -17,6 +17,10 @@
 
 #include "../includes/philo.h"
 
+int	ft_atoi(char *str)
+{
+}
+
 /**
  * @brief get string length.
  * @param str string.
