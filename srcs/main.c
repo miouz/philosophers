@@ -11,37 +11,16 @@
 /* ************************************************************************** */
 
 #include "../includes/philo.h"
-#include <stdbool.h>
-#include <stdlib.h>
-
-bool	is_int(char *str)
-{
-	
-}
-
-bool	is_valid_args(int argc, char **argv)
-{
-	int	i;
-
-	i = 0;
-	if (argc != 5 && argc != 6)
-		return (error_quit(ARGS_ERROR), false);
-	while (argv[i])
-	{
-		if (is_int(argv[i]) == false)
-			return (error_quit(ARGS_ERROR), false);
-		i++;
-	}
-	return (true);
-}
 
 int	main(int argc, char **argv)
 {
 	t_philo		philos;
 
-	if (is_valid_args(argc, argv) == false)
-		exit (EXIT_FAILURE);
-	init_philos(&philos, argc, argv);
+	if (is_valid_args(argc, &argv[1]) == false)
+		return (error_quit(ARGS_ERROR), EXIT_FAILURE);
+	if (init_philos(&philos, &argv[1]) == EXIT_FAILURE)
+		return (EXIT_FAILURE);
 	routine(&philos);
+	free_philos(&philos);
 	return (EXIT_SUCCESS);
 }
