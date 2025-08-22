@@ -21,7 +21,8 @@ void	free_philos(t_philo *philos)
 {
 	free(philos->forks);
 	free(philos->status);
-	free(philos->mutex);
+	free(philos->fork_mutex);
+	free(philos->thread_ids);
 }
 
 long int	ft_atol(const char *nptr)
