@@ -11,16 +11,23 @@
 /* ************************************************************************** */
 
 #include "../includes/philo.h"
+#include <stdlib.h>
 
 int	main(int argc, char **argv)
 {
 	t_philo		philos;
 
 	if (is_valid_args(argc, &argv[1]) == false)
-		return (error_quit(ARGS_ERROR), EXIT_FAILURE);
+		return (error_msg(ARGS_ERROR), EXIT_FAILURE);
 	if (init_philos(&philos, &argv[1]) == EXIT_FAILURE)
 		return (EXIT_FAILURE);
-	routine(&philos);
+	if (start_routine(&philos) == EXIT_FAILURE)
+		return (free_philos(&philos), EXIT_FAILURE);
+	while (1)
+	{
+		if (philos.to_stop_simulation == true)
+			break ;
+	}
 	free_philos(&philos);
 	return (EXIT_SUCCESS);
 }

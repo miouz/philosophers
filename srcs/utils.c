@@ -69,7 +69,7 @@ int	ft_strlen(char *str)
 * @param msg: error message to print.
 * @return EXIT_SUCCESS or EXIT_FAILURE.
 */
-int	error_quit(char *msg)
+int	error_msg(char *msg)
 {
 	int	size;
 

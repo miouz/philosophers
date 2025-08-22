@@ -11,13 +11,13 @@
 /* ************************************************************************** */
 
 #include "../includes/philo.h"
+#include <stdlib.h>
 #include <string.h>
 
 int	init_philos(t_philo *philo, char **arg)
 {
-	philo->status = NULL;
-	philo->forks = NULL;
-	philo->mutex = NULL;
+	memset(philo, 0, sizeof(t_philo));
+	philo->to_stop_simulation = false;
 	philo->philo_num = (int)ft_atol(arg[0]);
 	philo->time_to_die = (int)ft_atol(arg[1]);
 	philo->time_to_eat = (int)ft_atol(arg[2]);
@@ -27,15 +27,15 @@ int	init_philos(t_philo *philo, char **arg)
 	else
 		philo->times_must_eat = -1;
 	if (philo->philo_num == 0)
-		return (error_quit(ARGS_ERROR_NOPHILO), EXIT_FAILURE);
+		return (error_msg(ARGS_ERROR_NOPHILO), EXIT_FAILURE);
 	philo->status = malloc(philo->philo_num * sizeof(int));
 	philo->forks = malloc(philo->philo_num * sizeof(int));
-	philo->mutex = malloc(philo->philo_num * sizeof(int));
-	if (!philo->forks || !philo->status || !philo->mutex)
-		return (free(philo->status), free(philo->forks),
-			free(philo->mutex), error_quit(MALLOC_ERROR), EXIT_FAILURE);
+	philo->mutex = malloc(philo->philo_num * sizeof(pthread_mutex_t));
+	philo->thread_ids = malloc(philo->philo_num * sizeof(pthread_t));
+	if (!philo->forks || !philo->status || !philo->mutex || !philo->thread_ids)
+		return (free(philo->status), free(philo->forks), free(philo->mutex),
+			free(philo->thread_ids), error_msg(MALLOC_ERROR), EXIT_FAILURE);
 	memset(philo->status, 0, philo->philo_num);
 	memset(philo->forks, 0, philo->philo_num);
-	memset(philo->mutex, 0, philo->philo_num);
 	return (EXIT_SUCCESS);
 }
