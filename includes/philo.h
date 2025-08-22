@@ -35,14 +35,12 @@
 typedef struct s_philo
 {
 	int				philo_id;
-	int				status;
-	unsigned char	forks;
-	pthread_mutex_t	mutex;
-	pthread_t		thread_ids;
-}	t_philo;
-
-typedef struct s_phi_data
-{
+	pthread_mutex_t	id_mutex;
+	pthread_mutex_t	print_mutex;
+	int				*status;
+	unsigned char	*forks;
+	pthread_mutex_t	*fork_mutex;
+	pthread_t		*thread_ids;
 	bool			to_stop_simulation;
 	struct timeval	time;
 	int				philo_num;
@@ -50,9 +48,7 @@ typedef struct s_phi_data
 	int				time_to_die;
 	int				time_to_sleep;
 	int				time_to_eat;
-	t_philo			*philo;
-
-}	t_phi_data;
+}	t_philo;
 
 enum e_philo_status
 {
@@ -61,6 +57,12 @@ enum e_philo_status
 	SLEEPING,
 	THINKING,
 	DEAD,
+};
+
+enum e_fork_status
+{
+	OCCUPIED,
+	FREE_TO_USE,
 };
 
 /*===============================PARSING======================================*/
