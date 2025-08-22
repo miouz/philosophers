@@ -23,9 +23,10 @@
  */
 static void	*thread_routine(void *philos)
 {
-	routine_eat(philos);
-	routine_sleep(philos);
-	routine_think(philos);
+	printf("my id is philo %d\n", ((t_philo *)philos)->philo_id);
+	// routine_eat(philos);
+	// routine_sleep(philos);
+	// routine_think(philos);
 	return (EXIT_SUCCESS);
 }
 
@@ -49,6 +50,7 @@ int	start_routine(t_philo *philos)
 	n = 0;
 	while (n < philos->philo_num)
 	{
+		philos->philo_id = n + 1;
 		ret = pthread_create(&philos->thread_ids[n], NULL,
 				thread_routine, (void *)philos);
 		if (ret < 0)

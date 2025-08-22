@@ -20,6 +20,7 @@
 # include <stdbool.h>
 # include <string.h>
 # include <sys/time.h>
+# include <stdio.h>
 
 /*===============================ERROR MESSAGES===============================*/
 # define ARGS_ERROR "Error: need 4 or 5 NUMERIC arguments: [number_of_philosophers]\
@@ -33,10 +34,15 @@
 /*===============================STRUCTS======================================*/
 typedef struct s_philo
 {
-	int				*status;
-	int				*forks;
-	pthread_mutex_t	*mutex;
-	pthread_t		*thread_ids;
+	int				philo_id;
+	int				status;
+	unsigned char	forks;
+	pthread_mutex_t	mutex;
+	pthread_t		thread_ids;
+}	t_philo;
+
+typedef struct s_phi_data
+{
 	bool			to_stop_simulation;
 	struct timeval	time;
 	int				philo_num;
@@ -44,7 +50,18 @@ typedef struct s_philo
 	int				time_to_die;
 	int				time_to_sleep;
 	int				time_to_eat;
-}	t_philo;
+	t_philo			*philo;
+
+}	t_phi_data;
+
+enum e_philo_status
+{
+	ONE_FORKED,
+	EATING,
+	SLEEPING,
+	THINKING,
+	DEAD,
+};
 
 /*===============================PARSING======================================*/
 bool		is_valid_args(int argc, char **argv);

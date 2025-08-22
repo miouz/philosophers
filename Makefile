@@ -15,7 +15,7 @@
 MAKE_CMD ?= $(MAKE)
 CC = cc
 CFLAGS = -Wall -Wextra -Werror
-DEBUG_FLAGS = -g3
+DEBUG_FLAGS = -g3 -fsanitize=thread
 
 #program variables
 NAME = philosophers
@@ -25,9 +25,10 @@ INCLUDE_DIR = includes/
 
 #srcs variables
 SRCS_MANDATORY = srcs/main.c \
-				 srcs/utils.c
-
-OBJS_MANDATORY = $(SRCS_MANDATORY:.c=.o)
+				 srcs/parse.c \
+				 srcs/utils.c \
+				 srcs/init.c \
+				 srcs/routine.c
 
 #color variables
 GREEN = \033[32m
@@ -40,7 +41,7 @@ RESET = \033[0m
 all: $(NAME)
 
 $(NAME): $(OBJS_MANDATORY)
-	$(CC) $(CFLAGS) $(DEBUG_FLAGS) -I $(INCLUDE_DIR) $(OBJS_MANDATORY) -o $(NAME)
+	$(CC) $(CFLAGS) $(DEBUG_FLAGS) -I $(INCLUDE_DIR) $(SRCS_MANDATORY) -o $(NAME) -lpthread
 	@echo "$(GREEN)Woah the mandatory is build(ﾉ◕ヮ◕)ﾉ$(RESET)"
 
 #---clean🍻
