@@ -23,11 +23,6 @@ int	main(int argc, char **argv)
 		return (EXIT_FAILURE);
 	if (start_routine(&philos) == EXIT_FAILURE)
 		return (free_philos(&philos), EXIT_FAILURE);
-	while (1)
-	{
-		if (philos.to_stop_simulation == true)
-			break ;
-	}
 	free_philos(&philos);
 	return (EXIT_SUCCESS);
 }

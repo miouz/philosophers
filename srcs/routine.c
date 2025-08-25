@@ -12,54 +12,35 @@
 
 #include "../includes/philo.h"
 #include <pthread.h>
+#include <stdbool.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <sys/time.h>
 #include <unistd.h>
 
 static int	routine_sleep(t_philo *philo, int id)
 {
-	pthread_mutex_lock(&philo->print_mutex);
-	printf("philo[%d] begin to sleep\n", id);
-	pthread_mutex_unlock(&philo->print_mutex);
-	sleep(philo->time_to_sleep);
+	(void)id;
+	usleep(philo->time_to_sleep);
 	return (EXIT_SUCCESS);
 }
 
 static int	routine_think(t_philo *philo, int id)
 {
-	pthread_mutex_lock(&philo->print_mutex);
-	printf("philo[%d] begin to think\n", id);
-	pthread_mutex_unlock(&philo->print_mutex);
+	(void)philo;
+	(void)id;
 	return (EXIT_SUCCESS);
 }
 
-static int	pick_fork(t_philo *philo, int id_fork)
+static int	get_philo_id(t_philo *philo)
 {
-	while (1)
-	{
-		if (philo->forks[id_fork - 1] == FREE_TO_USE)
-			break ;
-	}
-	pthread_mutex_lock(&philo->fork_mutex[id_fork - 1]);
-	printf("philo[%d] take a fork\n", id);
-	pthread_mutex_unlock(&philo->print_mutex);
-	return (EXIT_SUCCESS);
+	int	id;
 
-}
-
-static int	routine_eat(t_philo *philo, int id)
-{
-	if (id == philo->philo_num - 1)
-	{
-		pick_fork(philo, id - 1);
-		pick_fork(philo, id);
-	}
-	else
-	{
-		pick_fork(philo, id);
-		pick_fork(philo, id - 1);
-	}
-	return (EXIT_SUCCESS);
+	pthread_mutex_lock(&philo->id_mutex);
+	id = philo->philo_id;
+	philo->philo_id++;
+	pthread_mutex_unlock(&philo->id_mutex);
+	return (id);
 }
 
 /**
@@ -68,19 +49,25 @@ static int	routine_eat(t_philo *philo, int id)
  * @param philos The philos structure.
  * @return SUCCESS or FAILURE.
  */
-static void	*thread_routine(void *philo)
+static void	*thread_routine(void *arg)
 {
-	int	id;
+	int		id;
+	t_philo	*philo;
 
-	pthread_mutex_lock(&(((t_philo *)philo)->id_mutex));
-	((t_philo *)philo)->philo_id++;
-	id = ((t_philo *)philo)->philo_id;
-	pthread_mutex_unlock(&(((t_philo *)philo)->id_mutex));
-	printf("my id is philo %d\n", id);
-	routine_eat(philo, id);
-	routine_sleep(philo, id);
-	routine_think(philo, id);
-	return (EXIT_SUCCESS);
+	philo = (t_philo *)arg;
+	id = get_philo_id(philo);
+	while (1)
+	{
+		// if (should_stop_simulation(philo) == true)
+		// 	return (NULL);
+		routine_eat(philo, id);
+		print_status(philo, id, EAT);
+		routine_sleep(philo, id);
+		print_status(philo, id, SLEEP);
+		routine_think(philo, id);
+		print_status(philo, id, THINK);
+	}
+	return (NULL);
 }
 
 /**
@@ -93,18 +80,20 @@ static void	*thread_routine(void *philo)
  * 	-Creat threads with number of philos.
  * 	-Return a value when need to stop simulation.
  */
-int	start_routine(t_philo *philos)
+int	start_routine(t_philo *philo)
 {
 	int	n;
 	int	ret;
 
-	if (gettimeofday(&philos->time, NULL) != EXIT_SUCCESS)
+	if (gettimeofday(&philo->start_time, NULL) != EXIT_SUCCESS)
 		return (error_msg(TIME_ERROR), EXIT_FAILURE);
 	n = 0;
-	while (n < philos->philo_num)
+	while (n < philo->philo_num)
 	{
-		ret = pthread_create(&philos->thread_ids[n], NULL,
-				thread_routine, (void *)philos);
+		if (should_stop_simulation(philo) == true)
+			return (EXIT_FAILURE);
+		ret = pthread_create(&philo->thread_ids[n], NULL,
+				thread_routine, (void *)philo);
 		if (ret < 0)
 			return (error_msg(THREAD_ERROR_CREAT), EXIT_FAILURE);
 		n++;
