@@ -14,7 +14,7 @@
 
 MAKE_CMD ?= $(MAKE)
 CC = cc
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -lpthread
 DEBUG_FLAGS = -g3 -fsanitize=thread
 
 #program variables
@@ -28,7 +28,10 @@ SRCS_MANDATORY = srcs/main.c \
 				 srcs/parse.c \
 				 srcs/utils.c \
 				 srcs/init.c \
-				 srcs/routine.c
+				 srcs/routine.c \
+				 srcs/routine_eat.c \
+				 srcs/routine_utils.c
+
 
 #color variables
 GREEN = \033[32m
@@ -41,7 +44,7 @@ RESET = \033[0m
 all: $(NAME)
 
 $(NAME): $(OBJS_MANDATORY)
-	$(CC) $(CFLAGS) $(DEBUG_FLAGS) -I $(INCLUDE_DIR) $(SRCS_MANDATORY) -o $(NAME) -lpthread
+	$(CC) $(CFLAGS) $(DEBUG_FLAGS) -I $(INCLUDE_DIR) $(SRCS_MANDATORY) -o $(NAME)
 	@echo "$(GREEN)Woah the mandatory is build(ﾉ◕ヮ◕)ﾉ$(RESET)"
 
 #---clean🍻

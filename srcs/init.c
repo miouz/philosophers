@@ -18,13 +18,15 @@
 
 int	init_mutex_fork(pthread_mutex_t *mutex, int num)
 {
-	while (num-- >= 0)
+	while (num >= 0)
 	{
 		if (pthread_mutex_init(&mutex[num], NULL) < 0)
 			return (EXIT_FAILURE);
+		num--;
 	}
 	return (EXIT_SUCCESS);
 }
+
 int	init_philos(t_philo *philo, char **arg)
 {
 	memset(philo, 0, sizeof(t_philo));
@@ -41,15 +43,14 @@ int	init_philos(t_philo *philo, char **arg)
 	if (philo->philo_num == 0)
 		return (error_msg(ARGS_ERROR_NOPHILO), EXIT_FAILURE);
 	philo->status = malloc(philo->philo_num * sizeof(int));
-	philo->forks = malloc(philo->philo_num * sizeof(unsigned char));
 	philo->fork_mutex = malloc(philo->philo_num * sizeof(pthread_mutex_t));
 	philo->thread_ids = malloc(philo->philo_num * sizeof(pthread_t));
-	if (!philo->forks || !philo->status || !philo->fork_mutex || !philo->thread_ids)
+	if (!philo->status || !philo->fork_mutex || !philo->thread_ids)
 		return (free_philos(philo), error_msg(MALLOC_ERROR), EXIT_FAILURE);
 	memset(philo->status, 0, philo->philo_num * sizeof(int));
-	memset(philo->forks, 0, philo->philo_num * sizeof(unsigned char));
-	pthread_mutex_init(&(philo->id_mutex), NULL);
-	pthread_mutex_init(&(philo->print_mutex), NULL);
+	pthread_mutex_init(&philo->id_mutex, NULL);
+	pthread_mutex_init(&philo->print_mutex, NULL);
+	pthread_mutex_init(&philo->stop_sim_mutex, NULL);
 	if (init_mutex_fork(philo->fork_mutex, philo->philo_num) == EXIT_FAILURE)
 		return (free_philos(philo), EXIT_FAILURE);
 	return (EXIT_SUCCESS);

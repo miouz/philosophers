@@ -31,6 +31,12 @@
 # define TIME_ERROR "Error: Can't get time\n"
 # define THREAD_ERROR_CREAT "Error : Can't creat thread\n"
 
+/*===============================MONITORING MESSAGES==========================*/
+# define SLEEP "is sleeping\n"
+# define THINK "is thinking\n"
+# define EAT "is eating\n"
+# define FORKED "has taken a fork\n"
+
 /*===============================STRUCTS======================================*/
 typedef struct s_philo
 {
@@ -38,32 +44,17 @@ typedef struct s_philo
 	pthread_mutex_t	id_mutex;
 	pthread_mutex_t	print_mutex;
 	int				*status;
-	unsigned char	*forks;
 	pthread_mutex_t	*fork_mutex;
 	pthread_t		*thread_ids;
 	bool			to_stop_simulation;
-	struct timeval	time;
+	pthread_mutex_t	stop_sim_mutex;
+	struct timeval	start_time;
 	int				philo_num;
 	int				times_must_eat;
 	int				time_to_die;
 	int				time_to_sleep;
 	int				time_to_eat;
 }	t_philo;
-
-enum e_philo_status
-{
-	ONE_FORKED,
-	EATING,
-	SLEEPING,
-	THINKING,
-	DEAD,
-};
-
-enum e_fork_status
-{
-	OCCUPIED,
-	FREE_TO_USE,
-};
 
 /*===============================PARSING======================================*/
 bool		is_valid_args(int argc, char **argv);
@@ -77,7 +68,13 @@ int			ft_strlen(char *str);
 void		free_philos(t_philo *philos);
 int			error_msg(char *msg);
 
-/*===============================THREAD======================================*/
+/*===============================ROUTINE======================================*/
 int			start_routine(t_philo *philos);
+int			routine_eat(t_philo *philo, int id);
+
+/*===============================ROUTINE_UTILS================================*/
+int			print_status(t_philo *philo, int id, char *str);
+int			stop_simulation(t_philo *philo);
+bool		should_stop_simulation(t_philo *philo);
 
 #endif // !PHILO_H
