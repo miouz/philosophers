@@ -11,13 +11,11 @@
 /* ************************************************************************** */
 
 #include "../includes/philo.h"
-#include <pthread.h>
-#include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 int	init_mutex_fork(pthread_mutex_t *mutex, int num)
 {
+	num = num - 1;
 	while (num >= 0)
 	{
 		if (pthread_mutex_init(&mutex[num], NULL) < 0)
