@@ -51,9 +51,9 @@ typedef struct s_philo
 	struct timeval	start_time;
 	int				philo_num;
 	int				times_must_eat;
-	int				time_to_die;
-	int				time_to_sleep;
-	int				time_to_eat;
+	useconds_t		time_to_die;
+	useconds_t		time_to_sleep;
+	useconds_t		time_to_eat;
 }	t_philo;
 
 /*===============================PARSING======================================*/

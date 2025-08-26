@@ -12,6 +12,7 @@
 
 #include "../includes/philo.h"
 #include <stdlib.h>
+#include <unistd.h>
 
 int	init_mutex_fork(pthread_mutex_t *mutex, int num)
 {
@@ -31,13 +32,17 @@ int	init_philos(t_philo *philo, char **arg)
 	philo->to_stop_simulation = false;
 	philo->philo_id = 0;
 	philo->philo_num = (int)ft_atol(arg[0]);
-	philo->time_to_die = (int)ft_atol(arg[1]);
-	philo->time_to_eat = (int)ft_atol(arg[2]);
-	philo->time_to_sleep = (int)ft_atol(arg[3]);
+	philo->time_to_die = (useconds_t)ft_atol(arg[1]);
+	printf("time to die %lu\n", (unsigned long)philo->time_to_die);
+	philo->time_to_eat = (useconds_t)ft_atol(arg[2]);
+	printf("time to eat %lu\n", (unsigned long)philo->time_to_eat);
+	philo->time_to_sleep = (useconds_t)ft_atol(arg[3]);
+	printf("time to sleep %lu\n",(unsigned long)philo->time_to_sleep);
 	if (arg[4])
-		philo->times_must_eat = (int)ft_atol(arg[4]);
+		philo->times_must_eat = (useconds_t)ft_atol(arg[4]);
 	else
 		philo->times_must_eat = -1;
+	printf("time must eat %d\n", philo->times_must_eat);
 	if (philo->philo_num == 0)
 		return (error_msg(ARGS_ERROR_NOPHILO), EXIT_FAILURE);
 	philo->status = malloc(philo->philo_num * sizeof(int));

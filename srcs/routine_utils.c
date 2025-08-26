@@ -12,6 +12,7 @@
 
 #include "../includes/philo.h"
 #include <stdlib.h>
+#include <unistd.h>
 
 bool	should_stop_simulation(t_philo *philo)
 {
@@ -30,7 +31,7 @@ int	stop_simulation(t_philo *philo)
 	return (EXIT_SUCCESS);
 }
 
-unsigned long	get_elapsed_time(struct timeval *start, struct timeval *end)
+useconds_t	get_elapsed_time(struct timeval *start, struct timeval *end)
 {
 	return ((end->tv_sec * 1000000 + end->tv_usec)
 		- (start->tv_sec * 1000000 + start->tv_usec));
@@ -46,13 +47,11 @@ int	get_current_time(struct timeval *current_time)
 int	print_status(t_philo *philo, int id, char *str)
 {
 	struct timeval	current_time;
-	unsigned long	time_elapsed;
 
 	pthread_mutex_lock(&philo->print_mutex);
 	if (get_current_time(&current_time) == EXIT_FAILURE)
 		return (stop_simulation(philo), EXIT_FAILURE);
-	time_elapsed = get_elapsed_time(&philo->start_time, &current_time);
-	printf("%ldms philo %d %s", time_elapsed, id + 1, str);
+	printf("%ldms philo %d %s", current_time.tv_sec * 1000000 + current_time.tv_usec, id + 1, str);
 	pthread_mutex_unlock(&philo->print_mutex);
 	return (EXIT_SUCCESS);
 }
