@@ -21,6 +21,7 @@
 static int	routine_sleep(t_philo *philo, int id)
 {
 	(void)id;
+	print_status(philo, id, SLEEP);
 	usleep(philo->time_to_sleep);
 	return (EXIT_SUCCESS);
 }
@@ -29,6 +30,7 @@ static int	routine_think(t_philo *philo, int id)
 {
 	(void)philo;
 	(void)id;
+	print_status(philo, id, THINK);
 	return (EXIT_SUCCESS);
 }
 
@@ -58,14 +60,14 @@ static void	*thread_routine(void *arg)
 	id = get_philo_id(philo);
 	while (1)
 	{
-		// if (should_stop_simulation(philo) == true)
-		// 	return (NULL);
-		routine_eat(philo, id);
-		print_status(philo, id, EAT);
-		routine_sleep(philo, id);
-		print_status(philo, id, SLEEP);
-		routine_think(philo, id);
-		print_status(philo, id, THINK);
+		if (should_stop_simulation(philo) == false)
+			routine_eat(philo, id);
+		if (should_stop_simulation(philo) == false)
+			routine_sleep(philo, id);
+		if (should_stop_simulation(philo) == false)
+			routine_think(philo, id);
+		else
+			break ;
 	}
 	return (NULL);
 }
@@ -90,8 +92,6 @@ int	start_routine(t_philo *philo)
 	n = 0;
 	while (n < philo->philo_num)
 	{
-		if (should_stop_simulation(philo) == true)
-			return (EXIT_FAILURE);
 		ret = pthread_create(&philo->thread_ids[n], NULL,
 				thread_routine, (void *)philo);
 		if (ret < 0)
