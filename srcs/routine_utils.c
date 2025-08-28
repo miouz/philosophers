@@ -11,6 +11,24 @@
 /* ************************************************************************** */
 
 #include "../includes/philo.h"
+#include <stdlib.h>
+
+int	segments_usleep(t_philo *philo, unsigned int time)
+{
+	int	n;
+	int	rest;
+
+	n = time / 10;
+	rest = time % 10;
+	while (n > 0 && should_stop_simulation(philo) == false)
+	{
+		usleep(10 * 1000);
+		n--;
+	}
+	if (rest > 0 && should_stop_simulation(philo) == false)
+		usleep(rest * 1000);
+	return (EXIT_SUCCESS);
+}
 
 bool	should_stop_simulation(t_philo *philo)
 {
