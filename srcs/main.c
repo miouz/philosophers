@@ -11,18 +11,20 @@
 /* ************************************************************************** */
 
 #include "../includes/philo.h"
+#include <stdio.h>
 
-int	terminate_threads(t_philo *philos)
+int	terminate_threads(t_params *prog_data, t_philo *philo)
 {
 	int			n_threads;
 
 	n_threads = 0;
-	while (n_threads <= philos->philo_num)
+	while (n_threads < prog_data->philo_num)
 	{
-		if (philos->thread_ids[n_threads] != 0)
-			pthread_join(philos->thread_ids[n_threads], NULL);
+		if (philo[n_threads].thread_id != 0)
+			pthread_join(philo[n_threads].thread_id, NULL);
 		n_threads++;
 	}
+	pthread_join(prog_data->monitoring_thread_id, NULL);
 	return (EXIT_SUCCESS);
 }
 
@@ -38,7 +40,7 @@ int	main(int argc, char **argv)
 		return (EXIT_FAILURE);
 	if (start_routine(philo, &param) == EXIT_FAILURE)
 		return (clean_data(&philo, &param), EXIT_FAILURE);
-	start_global_monitoring_thread(&param, philo);
+	start_global_monitoring_thread(philo, &param);
 	terminate_threads(&param, philo);
 	clean_data(&philo, &param);
 	return (EXIT_SUCCESS);
