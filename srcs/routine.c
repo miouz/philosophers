@@ -11,38 +11,20 @@
 /* ************************************************************************** */
 
 #include "../includes/philo.h"
-#include <pthread.h>
-#include <stdbool.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <sys/time.h>
-#include <unistd.h>
 
-static int	routine_sleep(t_philo *philo, int id)
+static int	routine_sleep(t_philo *philo)
 {
-	(void)id;
-	print_status(philo, id, SLEEP);
-	usleep(philo->time_to_sleep);
+	print_status(philo, philo->philo_id, SLEEP);
+	segments_usleep(philo, philo->prog_data->time_to_sleep);
 	return (EXIT_SUCCESS);
 }
 
-static int	routine_think(t_philo *philo, int id)
+static int	routine_think(t_philo *philo)
 {
-	(void)philo;
-	(void)id;
-	print_status(philo, id, THINK);
+	print_status(philo, philo->philo_id, THINK);
 	return (EXIT_SUCCESS);
-}
-
-static int	get_philo_id(t_philo *philo)
-{
-	int	id;
-
-	pthread_mutex_lock(&philo->id_mutex);
-	id = philo->philo_id;
-	philo->philo_id++;
-	pthread_mutex_unlock(&philo->id_mutex);
-	return (id);
 }
 
 /**
@@ -53,19 +35,18 @@ static int	get_philo_id(t_philo *philo)
  */
 static void	*thread_routine(void *arg)
 {
-	int		id;
 	t_philo	*philo;
 
 	philo = (t_philo *)arg;
-	id = get_philo_id(philo);
+	gettimeofday(&philo->last_meal_time, NULL);
 	while (1)
 	{
 		if (should_stop_simulation(philo) == false)
-			routine_eat(philo, id);
+			routine_eat(philo);
 		if (should_stop_simulation(philo) == false)
-			routine_sleep(philo, id);
+			routine_sleep(philo);
 		if (should_stop_simulation(philo) == false)
-			routine_think(philo, id);
+			routine_think(philo);
 		if (should_stop_simulation(philo) == true)
 			break ;
 	}
@@ -82,18 +63,16 @@ static void	*thread_routine(void *arg)
  * 	-Creat threads with number of philos.
  * 	-Return a value when need to stop simulation.
  */
-int	start_routine(t_philo *philo)
+int	start_routine(t_philo *philo, t_params *prog_data)
 {
 	int	n;
 	int	ret;
 
-	if (gettimeofday(&philo->start_time, NULL) != EXIT_SUCCESS)
-		return (error_msg(TIME_ERROR), EXIT_FAILURE);
 	n = 0;
-	while (n < philo->philo_num)
+	while (n < prog_data->philo_num)
 	{
-		ret = pthread_create(&philo->thread_ids[n], NULL,
-				thread_routine, (void *)philo);
+		ret = pthread_create(&philo[n].thread_id, NULL,
+				thread_routine, (void *)&philo[n]);
 		if (ret < 0)
 			return (error_msg(THREAD_ERROR_CREAT), EXIT_FAILURE);
 		n++;

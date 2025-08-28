@@ -56,7 +56,8 @@ typedef struct s_params
 
 typedef struct s_philo
 {
-	pthread_t		thread_ids;
+	int				philo_id;
+	pthread_t		thread_id;
 	pthread_mutex_t	fork_mutex;
 	unsigned int	times_eaten;
 	struct timeval	last_meal_time;
@@ -79,10 +80,11 @@ void			clean_data(t_philo **philo, t_params *prog_data);
 int				destroy_mutex_in_n_structure(t_philo *philo, int size);
 
 /*===============================ROUTINE======================================*/
-int				start_routine(t_philo *philos);
-int				routine_eat(t_philo *philo, int id);
+int				start_routine(t_philo *philo, t_params *prog_data);
+int				routine_eat(t_philo *philo);
 
 /*===============================ROUTINE_UTILS================================*/
+int				segments_usleep(t_philo *philo, unsigned int time);
 int				print_status(t_philo *philo, int id, char *str);
 int				stop_simulation(t_philo *philo);
 bool			should_stop_simulation(t_philo *philo);

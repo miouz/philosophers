@@ -11,11 +11,6 @@
 /* ************************************************************************** */
 
 #include "../includes/philo.h"
-#include <bits/types/struct_timeval.h>
-#include <pthread.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
 
 static int	drop_fork(t_philo *philo, int id_fork, int id_philo)
 {
@@ -118,13 +113,13 @@ int	update_last_meal_time_and_times_eaten(t_philo *philo, int id)
 	return (EXIT_SUCCESS);
 }
 
-int	routine_eat(t_philo *philo, int id)
+int	routine_eat(t_philo *philo)
 {
-	if (get_two_forks(philo, id) == EXIT_SUCCESS)
+	if (get_two_forks(philo, philo->philo_id) == EXIT_SUCCESS)
 	{
-		print_status(philo, id, EAT);
-		update_last_meal_time_and_times_eaten(philo, id);
-		usleep(philo->time_to_eat * 1000);
+		print_status(philo, philo->philo_id, EAT);
+		update_last_meal_time_and_times_eaten(philo, philo->philo_id);
+		segments_usleep(philo, philo->prog_data->time_to_eat);
 		if (drop_two_forks(philo, id) == EXIT_SUCCESS)
 			return (EXIT_SUCCESS);
 	}
