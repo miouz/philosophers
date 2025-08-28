@@ -92,6 +92,7 @@ int				get_time_stamps_ms(long long int *time_stamps_ms);
 unsigned int	get_time_elapsed_ms(struct timeval *start, struct timeval *end);
 
 /*===============================MONITORING================================*/
-int				start_global_monitoring_thread(t_philo *philo);
+int				start_global_monitoring_thread(t_philo *philo,
+					t_params *prog_data);
 
 #endif // !PHILO_H
