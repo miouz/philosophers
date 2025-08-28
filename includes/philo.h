@@ -39,37 +39,44 @@
 # define DIE "died\n"
 
 /*===============================STRUCTS======================================*/
-typedef struct s_philo
+
+typedef struct s_params
 {
-	int				philo_id;
+	int				philo_num;
+	unsigned int	time_to_die;
+	unsigned int	time_to_eat;
+	unsigned int	time_to_sleep;
+	int				times_must_eat;
 	struct timeval	start_time;
-	pthread_mutex_t	id_mutex;
 	pthread_mutex_t	print_mutex;
 	bool			to_stop_simulation;
 	pthread_mutex_t	stop_sim_mutex;
-	pthread_t		*thread_ids;
-	pthread_mutex_t	*fork_mutex;
-	unsigned int	*times_eaten;
-	struct timeval	*last_meal_time;
-	pthread_mutex_t	*last_meal_time_and_times_eaten_mutex;
-	int				philo_num;
-	int				times_must_eat;
-	unsigned int	time_to_die;
-	unsigned int	time_to_sleep;
-	unsigned int	time_to_eat;
+	pthread_t		monitoring_thread_id;
+}	t_params;
+
+typedef struct s_philo
+{
+	pthread_t		thread_ids;
+	pthread_mutex_t	fork_mutex;
+	unsigned int	times_eaten;
+	struct timeval	last_meal_time;
+	pthread_mutex_t	last_meal_time_and_times_eaten_mutex;
+	t_params		*prog_data;
 }	t_philo;
 
 /*===============================PARSING======================================*/
 bool			is_valid_args(int argc, char **argv);
 
 /*===============================INIT======================================*/
-int				init_philos(t_philo *philo, char **argv);
+int				init_params_and_philos(t_philo **philo,
+					t_params *prog_data, char **arg);
 
 /*===============================UTILS======================================*/
 long int		ft_atol(const char *nptr);
 int				ft_strlen(char *str);
-void			free_philos(t_philo *philos);
 int				error_msg(char *msg);
+void			clean_data(t_philo **philo, t_params *prog_data);
+int				destroy_mutex_in_n_structure(t_philo *philo, int size);
 
 /*===============================ROUTINE======================================*/
 int				start_routine(t_philo *philos);
