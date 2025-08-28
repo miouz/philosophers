@@ -66,7 +66,7 @@ static void	*thread_routine(void *arg)
 			routine_sleep(philo, id);
 		if (should_stop_simulation(philo) == false)
 			routine_think(philo, id);
-		else
+		if (should_stop_simulation(philo) == true)
 			break ;
 	}
 	return (NULL);
