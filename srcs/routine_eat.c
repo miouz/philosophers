@@ -11,6 +11,9 @@
 /* ************************************************************************** */
 
 #include "../includes/philo.h"
+#include <bits/types/struct_timeval.h>
+#include <pthread.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 
@@ -106,14 +109,22 @@ static int	get_two_forks(t_philo *philo, int id)
 	return (EXIT_SUCCESS);
 }
 
+int	update_last_meal_time_and_times_eaten(t_philo *philo, int id)
+{
+	pthread_mutex_lock(&philo->last_meal_time_and_times_eaten_mutex[id]);
+	gettimeofday(&philo->last_meal_time[id], NULL);
+	philo->times_eaten[id]++;
+	pthread_mutex_unlock(&philo->last_meal_time_and_times_eaten_mutex[id]);
+	return (EXIT_SUCCESS);
+}
+
 int	routine_eat(t_philo *philo, int id)
 {
-	if (id == 5)
-		stop_simulation(philo);
 	if (get_two_forks(philo, id) == EXIT_SUCCESS)
 	{
 		print_status(philo, id, EAT);
-		usleep(philo->time_to_eat);
+		update_last_meal_time_and_times_eaten(philo, id);
+		usleep(philo->time_to_eat * 1000);
 		if (drop_two_forks(philo, id) == EXIT_SUCCESS)
 			return (EXIT_SUCCESS);
 	}
