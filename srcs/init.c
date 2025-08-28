@@ -11,6 +11,8 @@
 /* ************************************************************************** */
 
 #include "../includes/philo.h"
+#include <stdio.h>
+#include <sys/time.h>
 
 static int	init_philos(t_philo **philo, t_params *prog_data)
 {
@@ -35,6 +37,7 @@ static int	init_philos(t_philo **philo, t_params *prog_data)
 			return (destroy_mutex_in_n_structure(*philo, n),
 				pthread_mutex_destroy(&(*philo)[n].fork_mutex), free(*philo),
 					*philo = NULL, EXIT_FAILURE);
+		gettimeofday(&(*philo)[n].last_meal_time, NULL);
 		n++;
 	}
 	return (EXIT_SUCCESS);

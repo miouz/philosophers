@@ -19,19 +19,7 @@ static int	annouce_philo_died(t_philo *philo, int index)
 	return (EXIT_SUCCESS);
 }
 
-static unsigned int	get_time_since_last_meal(t_philo *philo,
-					struct timeval *current_time)
-{
-	unsigned int	time_since_last_meal;
-
-	pthread_mutex_lock(&philo->last_meal_time_and_times_eaten_mutex);
-	time_since_last_meal = get_time_elapsed_ms(&philo->last_meal_time,
-			current_time);
-	pthread_mutex_unlock(&philo->last_meal_time_and_times_eaten_mutex);
-	return (time_since_last_meal);
-}
-
-static bool	one_philo_died(t_philo *philo, bool *philo_is_full)
+static bool	one_philo_died_or_full(t_philo *philo, bool *philo_is_full)
 {
 	struct timeval	current_time;
 	unsigned int	time_since_last_meal;
@@ -41,11 +29,14 @@ static bool	one_philo_died(t_philo *philo, bool *philo_is_full)
 	gettimeofday(&current_time, NULL);
 	while (index < philo->prog_data->philo_num)
 	{
-		time_since_last_meal = get_time_since_last_meal(&philo[index],
+		pthread_mutex_lock(&philo[index].last_meal_time_and_times_eaten_mutex);
+		time_since_last_meal = get_time_elapsed_ms(&philo[index].last_meal_time,
 				&current_time);
-		if (philo->prog_data->times_must_eat > -1 && philo->times_eaten
+		if (philo->prog_data->times_must_eat > -1 && philo[index].times_eaten
 			>= (unsigned int)philo->prog_data->times_must_eat)
 			philo_is_full[index] = true;
+		pthread_mutex_unlock(
+			&philo[index].last_meal_time_and_times_eaten_mutex);
 		if (time_since_last_meal >= philo->prog_data->time_to_die)
 			return (annouce_philo_died(philo, index), true);
 		index++;
@@ -81,7 +72,7 @@ static void	*global_monitoring_thread(void *arg)
 	while (1)
 	{
 		usleep(1000);
-		if (one_philo_died(philo, philo_is_full) == true
+		if (one_philo_died_or_full(philo, philo_is_full) == true
 			|| all_philos_are_full(philo_is_full,
 				philo->prog_data->philo_num, philo) == true)
 			return (free(philo_is_full), NULL);

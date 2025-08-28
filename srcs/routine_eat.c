@@ -12,7 +12,7 @@
 
 #include "../includes/philo.h"
 
-static int	drop_fork(t_philo *philo, pthread_mutex_t *fork_mutex, int id_philo)
+static int	drop_fork(pthread_mutex_t *fork_mutex)
 {
 	int	retval;
 
@@ -23,7 +23,6 @@ static int	drop_fork(t_philo *philo, pthread_mutex_t *fork_mutex, int id_philo)
 		if (retval == EXIT_SUCCESS)
 			break ;
 	}
-	print_status(philo, id_philo, "has drop a fork\n");
 	return (EXIT_SUCCESS);
 }
 
@@ -54,14 +53,14 @@ static int	drop_two_forks(t_philo *philo, int id)
 		right_fork = &(philo - 1)->fork_mutex;
 	if (id == philo->prog_data->philo_num - 1)
 	{
-		if (drop_fork(philo, left_fork, id) == EXIT_SUCCESS
-			&& drop_fork(philo, right_fork, id) == EXIT_SUCCESS)
+		if (drop_fork(left_fork) == EXIT_SUCCESS
+			&& drop_fork(right_fork) == EXIT_SUCCESS)
 			return (EXIT_SUCCESS);
 	}
 	else
 	{
-		if (drop_fork(philo, right_fork, id) == EXIT_SUCCESS
-			&& drop_fork(philo, left_fork, id) == EXIT_SUCCESS)
+		if (drop_fork(right_fork) == EXIT_SUCCESS
+			&& drop_fork(left_fork) == EXIT_SUCCESS)
 			return (EXIT_SUCCESS);
 	}
 	return (EXIT_FAILURE);

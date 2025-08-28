@@ -38,7 +38,6 @@ static void	*thread_routine(void *arg)
 	t_philo	*philo;
 
 	philo = (t_philo *)arg;
-	gettimeofday(&philo->last_meal_time, NULL);
 	while (1)
 	{
 		if (should_stop_simulation(philo) == false)
