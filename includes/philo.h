@@ -36,45 +36,53 @@
 # define THINK "is thinking\n"
 # define EAT "is eating\n"
 # define FORKED "has taken a fork\n"
+# define DIE "died\n"
 
 /*===============================STRUCTS======================================*/
 typedef struct s_philo
 {
 	int				philo_id;
+	struct timeval	start_time;
 	pthread_mutex_t	id_mutex;
 	pthread_mutex_t	print_mutex;
-	int				*status;
-	pthread_mutex_t	*fork_mutex;
-	pthread_t		*thread_ids;
 	bool			to_stop_simulation;
 	pthread_mutex_t	stop_sim_mutex;
-	struct timeval	start_time;
+	pthread_t		*thread_ids;
+	pthread_mutex_t	*fork_mutex;
+	unsigned int	*times_eaten;
+	struct timeval	*last_meal_time;
+	pthread_mutex_t	*last_meal_time_and_times_eaten_mutex;
 	int				philo_num;
 	int				times_must_eat;
-	useconds_t		time_to_die;
-	useconds_t		time_to_sleep;
-	useconds_t		time_to_eat;
+	unsigned int	time_to_die;
+	unsigned int	time_to_sleep;
+	unsigned int	time_to_eat;
 }	t_philo;
 
 /*===============================PARSING======================================*/
-bool		is_valid_args(int argc, char **argv);
+bool			is_valid_args(int argc, char **argv);
 
 /*===============================INIT======================================*/
-int			init_philos(t_philo *philo, char **argv);
+int				init_philos(t_philo *philo, char **argv);
 
 /*===============================UTILS======================================*/
-long int	ft_atol(const char *nptr);
-int			ft_strlen(char *str);
-void		free_philos(t_philo *philos);
-int			error_msg(char *msg);
+long int		ft_atol(const char *nptr);
+int				ft_strlen(char *str);
+void			free_philos(t_philo *philos);
+int				error_msg(char *msg);
 
 /*===============================ROUTINE======================================*/
-int			start_routine(t_philo *philos);
-int			routine_eat(t_philo *philo, int id);
+int				start_routine(t_philo *philos);
+int				routine_eat(t_philo *philo, int id);
 
 /*===============================ROUTINE_UTILS================================*/
-int			print_status(t_philo *philo, int id, char *str);
-int			stop_simulation(t_philo *philo);
-bool		should_stop_simulation(t_philo *philo);
+int				print_status(t_philo *philo, int id, char *str);
+int				stop_simulation(t_philo *philo);
+bool			should_stop_simulation(t_philo *philo);
+int				get_time_stamps_ms(long long int *time_stamps_ms);
+unsigned int	get_time_elapsed_ms(struct timeval *start, struct timeval *end);
+
+/*===============================MONITORING================================*/
+int				start_global_monitoring_thread(t_philo *philo);
 
 #endif // !PHILO_H
