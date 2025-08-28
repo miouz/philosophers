@@ -16,12 +16,29 @@
  */
 
 #include "../includes/philo.h"
+#include <pthread.h>
 
-void	free_philos(t_philo *philos)
+int	destroy_mutex_in_n_structure(t_philo *philo, int size)
 {
-	free(philos->status);
-	free(philos->fork_mutex);
-	free(philos->thread_ids);
+	int	n;
+
+	n = 0;
+	while (n < size)
+	{
+		pthread_mutex_destroy(&philo[n].fork_mutex);
+		pthread_mutex_destroy(&philo[n].last_meal_time_and_times_eaten_mutex);
+		n++;
+	}
+	return (EXIT_SUCCESS);
+}
+
+void	clean_data(t_philo **philo, t_params *prog_data)
+{
+	pthread_mutex_destroy(&prog_data->print_mutex);
+	pthread_mutex_destroy(&prog_data->stop_sim_mutex);
+	destroy_mutex_in_n_structure(*philo, prog_data->philo_num);
+	free(*philo);
+	*philo = NULL;
 }
 
 long int	ft_atol(const char *nptr)
