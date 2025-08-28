@@ -28,15 +28,18 @@ int	terminate_threads(t_philo *philos)
 
 int	main(int argc, char **argv)
 {
-	t_philo		philos;
+	t_philo		*philo;
+	t_params	param;
 
+	philo = NULL;
 	if (is_valid_args(argc, &argv[1]) == false)
 		return (error_msg(ARGS_ERROR), EXIT_FAILURE);
-	if (init_philos(&philos, &argv[1]) == EXIT_FAILURE)
+	if (init_params_and_philos(&philo, &param, &argv[1]) == EXIT_FAILURE)
 		return (EXIT_FAILURE);
-	start_routine(&philos);
-	start_global_monitoring_thread(&philos);
-	terminate_threads(&philos);
-	free_philos(&philos);
+	if (start_routine(philo, &param) == EXIT_FAILURE)
+		return (clean_data(&philo, &param), EXIT_FAILURE);
+	start_global_monitoring_thread(&param, philo);
+	terminate_threads(&param, philo);
+	clean_data(&philo, &param);
 	return (EXIT_SUCCESS);
 }

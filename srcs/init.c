@@ -22,6 +22,8 @@ static int	init_philos(t_philo **philo, t_params *prog_data)
 		return (EXIT_FAILURE);
 	while (n < prog_data->philo_num)
 	{
+		(*philo)[n].philo_id = n;
+		(*philo)[n].thread_id = 0;
 		(*philo)[n].times_eaten = 0;
 		(*philo)[n].prog_data = prog_data;
 		if (pthread_mutex_init(&(*philo)[n].fork_mutex, NULL) < 0)
@@ -55,7 +57,7 @@ static int	init_params(t_params *prog_data, char **arg)
 		prog_data->times_must_eat = -1;
 	printf("time must eat %d\n", prog_data->times_must_eat);
 	if (gettimeofday(&prog_data->start_time, NULL) < 0)
-		return (EXIT_FAILURE);
+		return (error_msg(TIME_ERROR), EXIT_FAILURE);
 	if (pthread_mutex_init(&prog_data->print_mutex, NULL) < 0)
 		return (EXIT_FAILURE);
 	prog_data->to_stop_simulation = false;
