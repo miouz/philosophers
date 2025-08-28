@@ -11,8 +11,6 @@
 /* ************************************************************************** */
 
 #include "../includes/philo.h"
-#include <stdlib.h>
-#include <unistd.h>
 
 bool	should_stop_simulation(t_philo *philo)
 {
@@ -31,27 +29,33 @@ int	stop_simulation(t_philo *philo)
 	return (EXIT_SUCCESS);
 }
 
-useconds_t	get_elapsed_time(struct timeval *start, struct timeval *end)
+unsigned int	get_time_elapsed_ms(struct timeval *start, struct timeval *end)
 {
-	return ((end->tv_sec * 1000000 + end->tv_usec)
-		- (start->tv_sec * 1000000 + start->tv_usec));
+	return (((end->tv_sec * 1000000 + end->tv_usec)
+			- (start->tv_sec * 1000000 + start->tv_usec)) / 1000);
 }
 
-int	get_current_time(struct timeval *current_time)
+int	get_time_stamps_ms(long long int *time_stamps_ms)
 {
-	if (gettimeofday(current_time, NULL) < 0)
+	struct timeval	current_time;
+
+	if (gettimeofday(&current_time, NULL) < 0)
 		return (error_msg(TIME_ERROR), EXIT_FAILURE);
+	*time_stamps_ms = current_time.tv_sec * 1000 + current_time.tv_usec / 1000;
 	return (EXIT_SUCCESS);
 }
 
 int	print_status(t_philo *philo, int id, char *str)
 {
-	struct timeval	current_time;
+	long long int	time_stamps_ms;
 
-	pthread_mutex_lock(&philo->print_mutex);
-	if (get_current_time(&current_time) == EXIT_FAILURE)
-		return (stop_simulation(philo), EXIT_FAILURE);
-	printf("%ldms philo %d %s", current_time.tv_sec * 1000000 + current_time.tv_usec, id + 1, str);
-	pthread_mutex_unlock(&philo->print_mutex);
+	if (should_stop_simulation(philo) == false)
+	{
+		pthread_mutex_lock(&philo->print_mutex);
+		if (get_time_stamps_ms(&time_stamps_ms) == EXIT_FAILURE)
+			return (stop_simulation(philo), EXIT_FAILURE);
+		printf("%lldms philo %d %s", time_stamps_ms, id + 1, str);
+		pthread_mutex_unlock(&philo->print_mutex);
+	}
 	return (EXIT_SUCCESS);
 }
