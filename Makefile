@@ -14,8 +14,10 @@
 
 MAKE_CMD ?= $(MAKE)
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -lpthread
-DEBUG_FLAGS = -g3 -fsanitize=thread
+CFLAGS = -Wall -Wextra -Werror -pthread
+DEBUG_FLAGS = -g3 
+#ASAN_FLAGS = -fsanitize=thread
+# ASAN_FLAGS = -fsanitize=address
 
 #program variables
 NAME = philosophers
@@ -30,7 +32,9 @@ SRCS_MANDATORY = srcs/main.c \
 				 srcs/init.c \
 				 srcs/routine.c \
 				 srcs/routine_eat.c \
-				 srcs/routine_utils.c
+				 srcs/routine_utils.c \
+				 srcs/monitoring_thread.c
+
 
 
 #color variables
