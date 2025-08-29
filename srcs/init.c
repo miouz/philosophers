@@ -26,7 +26,7 @@ static int	init_philos(t_philo **philo, t_params *prog_data)
 	{
 		(*philo)[n].philo_id = n;
 		(*philo)[n].thread_id = 0;
-		(*philo)[n].times_eaten = 0;
+		(*philo)[n].times_eaten = -1;
 		(*philo)[n].prog_data = prog_data;
 		if (pthread_mutex_init(&(*philo)[n].fork_mutex, NULL) < 0)
 			return (destroy_mutex_in_n_structure(*philo, n), free(*philo),
@@ -37,7 +37,7 @@ static int	init_philos(t_philo **philo, t_params *prog_data)
 			return (destroy_mutex_in_n_structure(*philo, n),
 				pthread_mutex_destroy(&(*philo)[n].fork_mutex), free(*philo),
 					*philo = NULL, EXIT_FAILURE);
-		gettimeofday(&(*philo)[n].last_meal_time, NULL);
+		// gettimeofday(&(*philo)[n].last_meal_time, NULL);
 		n++;
 	}
 	return (EXIT_SUCCESS);

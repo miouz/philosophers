@@ -33,11 +33,11 @@ static bool	one_philo_died_or_full(t_philo *philo, bool *philo_is_full)
 		time_since_last_meal = get_time_elapsed_ms(&philo[index].last_meal_time,
 				&current_time);
 		if (philo->prog_data->times_must_eat > -1 && philo[index].times_eaten
-			>= (unsigned int)philo->prog_data->times_must_eat)
+			>= philo->prog_data->times_must_eat)
 			philo_is_full[index] = true;
 		pthread_mutex_unlock(
 			&philo[index].last_meal_time_and_times_eaten_mutex);
-		if (time_since_last_meal >= philo->prog_data->time_to_die)
+		if (time_since_last_meal > philo->prog_data->time_to_die)
 			return (annouce_philo_died(philo, index), true);
 		index++;
 	}
@@ -71,10 +71,11 @@ static void	*global_monitoring_thread(void *arg)
 	memset(philo_is_full, false, philo->prog_data->philo_num);
 	while (1)
 	{
-		usleep(1000);
+		usleep(2000);
 		if (one_philo_died_or_full(philo, philo_is_full) == true
-			|| all_philos_are_full(philo_is_full,
-				philo->prog_data->philo_num, philo) == true)
+			|| (philo->prog_data->times_must_eat > -1
+				&& all_philos_are_full(philo_is_full,
+					philo->prog_data->philo_num, philo) == true))
 			return (free(philo_is_full), NULL);
 	}
 	return (NULL);

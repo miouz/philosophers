@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "../includes/philo.h"
+#include <stdbool.h>
 #include <stdio.h>
 #include <sys/time.h>
 
@@ -38,6 +39,11 @@ static void	*thread_routine(void *arg)
 	t_philo	*philo;
 
 	philo = (t_philo *)arg;
+	update_last_meal_time_and_times_eaten(philo);
+	if ((is_even(philo->prog_data->philo_num) == true
+			&& is_even(philo->philo_id) == false)
+		|| ((is_even(philo->prog_data->philo_num) == false) && is_even(philo->philo_id) == true))
+		usleep(philo->prog_data->time_to_eat);
 	while (1)
 	{
 		if (should_stop_simulation(philo) == false)

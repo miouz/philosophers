@@ -59,7 +59,7 @@ typedef struct s_philo
 	int				philo_id;
 	pthread_t		thread_id;
 	pthread_mutex_t	fork_mutex;
-	unsigned int	times_eaten;
+	int				times_eaten;
 	struct timeval	last_meal_time;
 	pthread_mutex_t	last_meal_time_and_times_eaten_mutex;
 	t_params		*prog_data;
@@ -84,12 +84,14 @@ int				start_routine(t_philo *philo, t_params *prog_data);
 int				routine_eat(t_philo *philo);
 
 /*===============================ROUTINE_UTILS================================*/
+int				update_last_meal_time_and_times_eaten(t_philo *philo);
 int				segments_usleep(t_philo *philo, unsigned int time);
 int				print_status(t_philo *philo, int id, char *str);
 int				stop_simulation(t_philo *philo);
 bool			should_stop_simulation(t_philo *philo);
 int				get_time_stamps_ms(long long int *time_stamps_ms);
 unsigned int	get_time_elapsed_ms(struct timeval *start, struct timeval *end);
+bool			is_even(int num);
 
 /*===============================MONITORING================================*/
 int				start_global_monitoring_thread(t_philo *philo,

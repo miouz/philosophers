@@ -51,7 +51,7 @@ static int	drop_two_forks(t_philo *philo, int id)
 		right_fork = &(philo + (philo->prog_data->philo_num - 1))->fork_mutex;
 	else
 		right_fork = &(philo - 1)->fork_mutex;
-	if (id == philo->prog_data->philo_num - 1)
+	if (id % 2 == 0)
 	{
 		if (drop_fork(left_fork) == EXIT_SUCCESS
 			&& drop_fork(right_fork) == EXIT_SUCCESS)
@@ -88,17 +88,15 @@ static int	get_two_forks(t_philo *philo, int id)
 		right_fork = &(philo + (philo->prog_data->philo_num - 1))->fork_mutex;
 	else
 		right_fork = &(philo - 1)->fork_mutex;
-	if (id == philo->prog_data->philo_num - 1)
+	if (is_even(id) == false)
 	{
 		if (pick_fork(philo, left_fork, id) == EXIT_SUCCESS
-			&& should_stop_simulation(philo) == false
 			&& pick_fork(philo, right_fork, id) == EXIT_SUCCESS)
 			return (EXIT_SUCCESS);
 	}
 	else
 	{
 		if (pick_fork(philo, right_fork, id) == EXIT_SUCCESS
-			&& should_stop_simulation(philo) == false
 			&& pick_fork(philo, left_fork, id) == EXIT_SUCCESS)
 			return (EXIT_SUCCESS);
 	}

@@ -64,6 +64,13 @@ int	get_time_stamps_ms(long long int *time_stamps_ms)
 	return (EXIT_SUCCESS);
 }
 
+bool	is_even(int num)
+{
+	if (num % 2 == 0)
+		return (true);
+	return (false);
+}
+
 int	print_status(t_philo *philo, int id, char *str)
 {
 	long long int	time_stamps_ms;
@@ -73,7 +80,7 @@ int	print_status(t_philo *philo, int id, char *str)
 		pthread_mutex_lock(&philo->prog_data->print_mutex);
 		if (get_time_stamps_ms(&time_stamps_ms) == EXIT_FAILURE)
 			return (stop_simulation(philo), EXIT_FAILURE);
-		printf("%lldms philo %d %s", time_stamps_ms, id + 1, str);
+		printf("%lld %d %s", time_stamps_ms, id + 1, str);
 		pthread_mutex_unlock(&philo->prog_data->print_mutex);
 	}
 	return (EXIT_SUCCESS);
