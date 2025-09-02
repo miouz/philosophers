@@ -11,21 +11,23 @@
 /* ************************************************************************** */
 
 #include "../includes/philo.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/time.h>
 
 int	segments_usleep(t_philo *philo, unsigned int time)
 {
-	int	n;
-	int	rest;
+	struct timeval	start_time;
+	struct timeval	current_time;
 
-	n = time / 10;
-	rest = time % 10;
-	while (n > 0 && should_stop_simulation(philo) == false)
+	gettimeofday(&start_time, NULL);
+	while (should_stop_simulation(philo) == false)
 	{
-		usleep(10 * 1000);
-		n--;
+		usleep(1000);
+		gettimeofday(&current_time, NULL);
+		if (get_time_elapsed_ms(&start_time, &current_time) >= time)
+			break ;
 	}
-	if (rest > 0 && should_stop_simulation(philo) == false)
-		usleep(rest * 1000);
 	return (EXIT_SUCCESS);
 }
 
