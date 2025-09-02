@@ -11,8 +11,6 @@
 /* ************************************************************************** */
 
 #include "../includes/philo.h"
-#include <stdio.h>
-#include <sys/time.h>
 
 static int	init_philos(t_philo **philo, t_params *prog_data)
 {
@@ -37,7 +35,6 @@ static int	init_philos(t_philo **philo, t_params *prog_data)
 			return (destroy_mutex_in_n_structure(*philo, n),
 				pthread_mutex_destroy(&(*philo)[n].fork_mutex), free(*philo),
 					*philo = NULL, EXIT_FAILURE);
-		// gettimeofday(&(*philo)[n].last_meal_time, NULL);
 		n++;
 	}
 	return (EXIT_SUCCESS);
@@ -49,23 +46,24 @@ static int	init_params(t_params *prog_data, char **arg)
 	if (prog_data->philo_num == 0)
 		return (error_msg(ARGS_ERROR_NOPHILO), EXIT_FAILURE);
 	prog_data->time_to_die = (unsigned int)ft_atol(arg[1]);
-	printf("time to die %d\n", (unsigned int)prog_data->time_to_die);
 	prog_data->time_to_eat = (unsigned int)ft_atol(arg[2]);
-	printf("time to eat %d\n", (unsigned int)prog_data->time_to_eat);
 	prog_data->time_to_sleep = (unsigned int)ft_atol(arg[3]);
-	printf("time to sleep %d\n", (unsigned int)prog_data->time_to_sleep);
 	if (arg[4])
 		prog_data->times_must_eat = (int)ft_atol(arg[4]);
 	else
 		prog_data->times_must_eat = -1;
-	printf("time must eat %d\n", prog_data->times_must_eat);
-	if (gettimeofday(&prog_data->start_time, NULL) < 0)
-		return (error_msg(TIME_ERROR), EXIT_FAILURE);
+	if (!prog_data->time_to_die || !prog_data->times_must_eat)
+		return (error_msg(ARGS_ERROR_ZERO), EXIT_FAILURE);
 	if (pthread_mutex_init(&prog_data->print_mutex, NULL) < 0)
 		return (EXIT_FAILURE);
 	prog_data->to_stop_simulation = false;
 	if (pthread_mutex_init(&prog_data->stop_sim_mutex, NULL) < 0)
-		return (pthread_mutex_destroy(&prog_data->print_mutex), EXIT_FAILURE);
+		return (pthread_mutex_destroy(&prog_data->stop_sim_mutex),
+			EXIT_FAILURE);
+	prog_data->begin_to_eat = false;
+	if (pthread_mutex_init(&prog_data->begin_to_eat_mutex, NULL) < 0)
+		return (pthread_mutex_destroy(&prog_data->begin_to_eat_mutex),
+			EXIT_FAILURE);
 	return (EXIT_SUCCESS);
 }
 

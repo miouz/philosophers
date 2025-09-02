@@ -27,9 +27,11 @@
  [time_to_die] [time_to_eat] [time_to_sleep]\
  [number_of_times_each_philosopher_must_eat]\n"
 # define ARGS_ERROR_NOPHILO "Error: need at least 1 philo -.-\n"
+# define ARGS_ERROR_ZERO "Error: need no zero value for correct simulation\n"
 # define MALLOC_ERROR "Error: Malloc failed\n"
 # define TIME_ERROR "Error: Can't get time\n"
 # define THREAD_ERROR_CREAT "Error : Can't creat thread\n"
+# define EAT_ERROR "Error : Can't begin to eat\n"
 
 /*===============================MONITORING MESSAGES==========================*/
 # define SLEEP "is sleeping\n"
@@ -47,8 +49,9 @@ typedef struct s_params
 	unsigned int	time_to_eat;
 	unsigned int	time_to_sleep;
 	int				times_must_eat;
-	struct timeval	start_time;
 	pthread_mutex_t	print_mutex;
+	bool			begin_to_eat;
+	pthread_mutex_t	begin_to_eat_mutex;
 	bool			to_stop_simulation;
 	pthread_mutex_t	stop_sim_mutex;
 	pthread_t		monitoring_thread_id;
@@ -82,15 +85,25 @@ int				destroy_mutex_in_n_structure(t_philo *philo, int size);
 /*===============================ROUTINE======================================*/
 int				start_routine(t_philo *philo, t_params *prog_data);
 int				routine_eat(t_philo *philo);
+int				routine_sleep(t_philo *philo);
+int				routine_think(t_philo *philo);
+bool			should_begin_to_eat(t_philo *philo);
+
+/*===============================EAT_ACTIONS================================*/
+int				drop_two_forks(t_philo *philo, int id);
+int				get_two_forks(t_philo *philo, int id);
+void			one_philo_eat(t_philo *philo);
+
+/*===============================TIME_UTILS================================*/
+int				update_last_meal_time_and_times_eaten(t_philo *philo);
+int				get_time_stamps_ms(long long int *time_stamps_ms);
+unsigned int	get_time_elapsed_ms(struct timeval *start, struct timeval *end);
 
 /*===============================ROUTINE_UTILS================================*/
-int				update_last_meal_time_and_times_eaten(t_philo *philo);
 int				segments_usleep(t_philo *philo, unsigned int time);
 int				print_status(t_philo *philo, int id, char *str);
 int				stop_simulation(t_philo *philo);
 bool			should_stop_simulation(t_philo *philo);
-int				get_time_stamps_ms(long long int *time_stamps_ms);
-unsigned int	get_time_elapsed_ms(struct timeval *start, struct timeval *end);
 bool			is_even(int num);
 
 /*===============================MONITORING================================*/

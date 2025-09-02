@@ -40,6 +40,7 @@ int	main(int argc, char **argv)
 		return (EXIT_FAILURE);
 	if (start_routine(philo, &param) == EXIT_FAILURE)
 		return (clean_data(&philo, &param), EXIT_FAILURE);
+	usleep(1000);
 	start_global_monitoring_thread(philo, &param);
 	terminate_threads(&param, philo);
 	clean_data(&philo, &param);

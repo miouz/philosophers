@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "../includes/philo.h"
-#include <stdlib.h>
 
 int	segments_usleep(t_philo *philo, unsigned int time)
 {
@@ -45,22 +44,6 @@ int	stop_simulation(t_philo *philo)
 	pthread_mutex_lock(&philo->prog_data->stop_sim_mutex);
 	philo->prog_data->to_stop_simulation = true;
 	pthread_mutex_unlock(&philo->prog_data->stop_sim_mutex);
-	return (EXIT_SUCCESS);
-}
-
-unsigned int	get_time_elapsed_ms(struct timeval *start, struct timeval *end)
-{
-	return (((end->tv_sec * 1000000 + end->tv_usec)
-			- (start->tv_sec * 1000000 + start->tv_usec)) / 1000);
-}
-
-int	get_time_stamps_ms(long long int *time_stamps_ms)
-{
-	struct timeval	current_time;
-
-	if (gettimeofday(&current_time, NULL) < 0)
-		return (error_msg(TIME_ERROR), EXIT_FAILURE);
-	*time_stamps_ms = current_time.tv_sec * 1000 + current_time.tv_usec / 1000;
 	return (EXIT_SUCCESS);
 }
 

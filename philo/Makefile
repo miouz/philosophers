@@ -20,7 +20,7 @@ DEBUG_FLAGS = -g3
 # ASAN_FLAGS = -fsanitize=address
 
 #program variables
-NAME = philosophers
+NAME = philo
 
 #include variables
 INCLUDE_DIR = includes/
@@ -30,8 +30,10 @@ SRCS_MANDATORY = srcs/main.c \
 				 srcs/parse.c \
 				 srcs/utils.c \
 				 srcs/init.c \
-				 srcs/routine.c \
-				 srcs/routine_eat.c \
+				 srcs/start_routine.c \
+				 srcs/routines.c \
+				 srcs/time_utils.c \
+				 srcs/routine_eat_actions.c \
 				 srcs/routine_utils.c \
 				 srcs/monitoring_thread.c
 

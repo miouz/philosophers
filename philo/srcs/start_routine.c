@@ -1,31 +1,55 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   routine.c                                          :+:      :+:    :+:   */
+/*   start_routine.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mizhouis <mizhouis@gmail.com>              +#+  +:+       +#+        */
+/*   By: mzhou <mzhou@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/22 10:31:28 by mizhouis          #+#    #+#             */
-/*   Updated: 2025/08/22 10:31:28 by mizhouis         ###   ########.fr       */
+/*   Created: 2025/09/02 11:36:34 by mzhou             #+#    #+#             */
+/*   Updated: 2025/09/02 11:36:35 by mzhou            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philo.h"
-#include <stdbool.h>
-#include <stdio.h>
-#include <sys/time.h>
 
-static int	routine_sleep(t_philo *philo)
+bool	should_begin_to_eat(t_philo *philo)
 {
-	print_status(philo, philo->philo_id, SLEEP);
-	segments_usleep(philo, philo->prog_data->time_to_sleep);
+	bool	ret;
+
+	pthread_mutex_lock(&philo->prog_data->begin_to_eat_mutex);
+	ret = philo->prog_data->begin_to_eat;
+	pthread_mutex_unlock(&philo->prog_data->begin_to_eat_mutex);
+	return (ret);
+}
+
+static int	begin_to_eat(t_philo *philo)
+{
+	if (pthread_mutex_lock(&philo->prog_data->begin_to_eat_mutex) < 0)
+		return (EXIT_FAILURE);
+	philo->prog_data->begin_to_eat = true;
+	if (pthread_mutex_unlock(&philo->prog_data->begin_to_eat_mutex) < 0)
+		return (EXIT_FAILURE);
 	return (EXIT_SUCCESS);
 }
 
-static int	routine_think(t_philo *philo)
+/**
+ * @brief Begin to take fork if odd or even.
+ * Philo_num is even
+ * 	philo[even] eat first;
+ * philo_num is odd:
+ * 	philo[odd] eat first;
+ * @param philo structure Philo
+ */
+static void	set_order_for_first_meal_take(t_philo *philo)
 {
-	print_status(philo, philo->philo_id, THINK);
-	return (EXIT_SUCCESS);
+	if (philo->prog_data->philo_num != 1)
+	{
+		if ((is_even(philo->prog_data->philo_num) == true
+				&& is_even(philo->philo_id) == false)
+			|| ((is_even(philo->prog_data->philo_num) == false)
+				&& is_even(philo->philo_id) == true))
+			usleep(philo->prog_data->time_to_eat * 800);
+	}
 }
 
 /**
@@ -39,11 +63,14 @@ static void	*thread_routine(void *arg)
 	t_philo	*philo;
 
 	philo = (t_philo *)arg;
+	while (1)
+	{
+		usleep(200);
+		if (should_begin_to_eat(philo) == true)
+			break ;
+	}
 	update_last_meal_time_and_times_eaten(philo);
-	if ((is_even(philo->prog_data->philo_num) == true
-			&& is_even(philo->philo_id) == false)
-		|| ((is_even(philo->prog_data->philo_num) == false) && is_even(philo->philo_id) == true))
-		usleep(philo->prog_data->time_to_eat);
+	set_order_for_first_meal_take(philo);
 	while (1)
 	{
 		if (should_stop_simulation(philo) == false)
@@ -81,6 +108,11 @@ int	start_routine(t_philo *philo, t_params *prog_data)
 		if (ret < 0)
 			return (error_msg(THREAD_ERROR_CREAT), EXIT_FAILURE);
 		n++;
+	}
+	if (begin_to_eat(philo) == EXIT_FAILURE)
+	{
+		error_msg(EAT_ERROR);
+		stop_simulation(philo);
 	}
 	return (EXIT_SUCCESS);
 }

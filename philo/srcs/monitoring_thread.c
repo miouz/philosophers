@@ -44,7 +44,7 @@ static bool	one_philo_died_or_full(t_philo *philo, bool *philo_is_full)
 	return (false);
 }
 
-bool	all_philos_are_full(bool *philo_is_full, int size, t_philo *philo)
+static bool	all_philos_are_full(bool *philo_is_full, int size, t_philo *philo)
 {
 	int	n;
 
@@ -85,6 +85,12 @@ int	start_global_monitoring_thread(t_philo *philo, t_params *prog_data)
 {
 	int	ret;
 
+	while (1)
+	{
+		usleep(800);
+		if (should_begin_to_eat(philo) == true)
+			break ;
+	}
 	ret = pthread_create(&prog_data->monitoring_thread_id, NULL,
 			global_monitoring_thread, (void *)philo);
 	if (ret < 0)

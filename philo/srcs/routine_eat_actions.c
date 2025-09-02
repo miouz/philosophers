@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "../includes/philo.h"
+#include <stdbool.h>
 
 static int	drop_fork(pthread_mutex_t *fork_mutex)
 {
@@ -41,7 +42,7 @@ static int	pick_fork(t_philo *philo, pthread_mutex_t *fork_mutex, int id_philo)
 	return (EXIT_SUCCESS);
 }
 
-static int	drop_two_forks(t_philo *philo, int id)
+int	drop_two_forks(t_philo *philo, int id)
 {
 	pthread_mutex_t	*left_fork;
 	pthread_mutex_t	*right_fork;
@@ -51,7 +52,7 @@ static int	drop_two_forks(t_philo *philo, int id)
 		right_fork = &(philo + (philo->prog_data->philo_num - 1))->fork_mutex;
 	else
 		right_fork = &(philo - 1)->fork_mutex;
-	if (id % 2 == 0)
+	if (is_even(id) == true)
 	{
 		if (drop_fork(left_fork) == EXIT_SUCCESS
 			&& drop_fork(right_fork) == EXIT_SUCCESS)
@@ -66,19 +67,7 @@ static int	drop_two_forks(t_philo *philo, int id)
 	return (EXIT_FAILURE);
 }
 
-/**
- * @brief The eat routine
- * @detail
- * 	-Take one fork
- *	-Take another fork
- *	-Begin to eat
- *	-Drop one fork
- *	-Drop another fork
- * @param philo [The philo structure]
- * @param id Philo's id
- * @return EXIT_SUCCESS or EXIT_FAILURE
- */
-static int	get_two_forks(t_philo *philo, int id)
+int	get_two_forks(t_philo *philo, int id)
 {
 	pthread_mutex_t	*left_fork;
 	pthread_mutex_t	*right_fork;
@@ -103,25 +92,9 @@ static int	get_two_forks(t_philo *philo, int id)
 	return (EXIT_SUCCESS);
 }
 
-int	update_last_meal_time_and_times_eaten(t_philo *philo)
+void	one_philo_eat(t_philo *philo)
 {
-	pthread_mutex_lock(&philo->last_meal_time_and_times_eaten_mutex);
-	gettimeofday(&philo->last_meal_time, NULL);
-	philo->times_eaten++;
-	pthread_mutex_unlock(&philo->last_meal_time_and_times_eaten_mutex);
-	return (EXIT_SUCCESS);
-}
-
-int	routine_eat(t_philo *philo)
-{
-	if (get_two_forks(philo, philo->philo_id) == EXIT_SUCCESS)
-	{
-		print_status(philo, philo->philo_id, EAT);
-		update_last_meal_time_and_times_eaten(philo);
-		segments_usleep(philo, philo->prog_data->time_to_eat);
-		if (drop_two_forks(philo, philo->philo_id) == EXIT_SUCCESS)
-			return (EXIT_SUCCESS);
-	}
-	stop_simulation(philo);
-	return (EXIT_FAILURE);
+	pick_fork(philo, &philo->fork_mutex, philo->philo_id);
+	drop_fork(&philo->fork_mutex);
+	segments_usleep(philo, philo->prog_data->time_to_die * 2);
 }
