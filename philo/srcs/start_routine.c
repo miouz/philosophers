@@ -14,12 +14,12 @@
 
 bool	should_begin_to_eat(t_philo *philo)
 {
-	bool	ret;
+	bool	return_value;
 
 	pthread_mutex_lock(&philo->prog_data->begin_to_eat_mutex);
-	ret = philo->prog_data->begin_to_eat;
+	return_value = philo->prog_data->begin_to_eat;
 	pthread_mutex_unlock(&philo->prog_data->begin_to_eat_mutex);
-	return (ret);
+	return (return_value);
 }
 
 static int	begin_to_eat(t_philo *philo)
@@ -33,28 +33,32 @@ static int	begin_to_eat(t_philo *philo)
 }
 
 /**
- * @brief Begin to take fork if odd or even.
- * Philo_num is even
- * 	philo[even] eat first;
- * philo_num is odd:
- * 	philo[odd] eat first;
+ * @brief Begin to take fork in even philo_num or odd philo_num case.
+ * Philo_num is odd:
+ * odd philo_id eat first, even philo_id eat after.
+ * odd philo_id get left_fork first, even philo_id get right_fork firstly.
+ * philo_num is even:
+ * odd philo_id eat first, even philo_id eat after.
+ * odd philo_id get left_fork first, even philo_id get right_fork firstly.
  * @param philo structure Philo
  */
 static void	set_order_for_first_meal_take(t_philo *philo)
 {
 	if (philo->prog_data->philo_num != 1)
 	{
-		if ((is_even(philo->prog_data->philo_num) == true
-				&& is_even(philo->philo_id) == false)
-			|| ((is_even(philo->prog_data->philo_num) == false)
-				&& is_even(philo->philo_id) == true))
+		if (is_even(philo->prog_data->philo_num) == false
+			&& philo->philo_id == philo->prog_data->philo_num)
+			usleep(philo->prog_data->time_to_eat * 2500);
+		else if (is_even(philo->philo_id) == true)
 			usleep(philo->prog_data->time_to_eat * 800);
 	}
 }
 
 /**
  * @brief The fucntion of thread.
- *
+ * -Wait to start simulaitons with all threads simultamnously.
+ * -Set meals tean to 0 and last meal time to current time.
+ * -Allow philos to take forks for first meal in order .
  * @param philos The philos structure.
  * @return SUCCESS or FAILURE.
  */
@@ -65,7 +69,7 @@ static void	*thread_routine(void *arg)
 	philo = (t_philo *)arg;
 	while (1)
 	{
-		usleep(200);
+		usleep(TIME_INTERVAL_CHECK_IF_START_SIM);
 		if (should_begin_to_eat(philo) == true)
 			break ;
 	}
@@ -91,27 +95,26 @@ static void	*thread_routine(void *arg)
  * @param Philos structure philos.
  * @return EXIT_SUCCESS or EXIT_FAILURE.
  * This function:
- * 	-Initialize time.
  * 	-Creat threads with number of philos.
- * 	-Return a value when need to stop simulation.
+ * 	-Allow philos begin the simulation at same time once all thread created.
  */
 int	start_routine(t_philo *philo, t_params *prog_data)
 {
-	int	n;
-	int	ret;
+	int	struct_index;
+	int	creat_thread_return;
 
-	n = 0;
-	while (n < prog_data->philo_num)
+	struct_index = 0;
+	while (struct_index < prog_data->philo_num)
 	{
-		ret = pthread_create(&philo[n].thread_id, NULL,
-				thread_routine, (void *)&philo[n]);
-		if (ret < 0)
-			return (error_msg(THREAD_ERROR_CREAT), EXIT_FAILURE);
-		n++;
+		creat_thread_return = pthread_create(&philo[struct_index].thread_id, 0,
+				thread_routine, (void *)&philo[struct_index]);
+		if (creat_thread_return < 0)
+			return (error_msg(ERROR_THREAD), EXIT_FAILURE);
+		struct_index++;
 	}
 	if (begin_to_eat(philo) == EXIT_FAILURE)
 	{
-		error_msg(EAT_ERROR);
+		error_msg(ERROR_EAT);
 		stop_simulation(philo);
 	}
 	return (EXIT_SUCCESS);

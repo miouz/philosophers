@@ -32,7 +32,7 @@ int	get_time_stamps_ms(long long int *time_stamps_ms)
 	struct timeval	current_time;
 
 	if (gettimeofday(&current_time, NULL) < 0)
-		return (error_msg(TIME_ERROR), EXIT_FAILURE);
+		return (error_msg(ERROR_TIME), EXIT_FAILURE);
 	*time_stamps_ms = current_time.tv_sec * 1000 + current_time.tv_usec / 1000;
 	return (EXIT_SUCCESS);
 }

@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "../includes/philo.h"
-#include <stdio.h>
 
 int	terminate_threads(t_params *prog_data, t_philo *philo)
 {
@@ -35,12 +34,12 @@ int	main(int argc, char **argv)
 
 	philo = NULL;
 	if (is_valid_args(argc, &argv[1]) == false)
-		return (error_msg(ARGS_ERROR), EXIT_FAILURE);
+		return (error_msg(ERROR_ARGS_NO_CONFORM), EXIT_FAILURE);
 	if (init_params_and_philos(&philo, &param, &argv[1]) == EXIT_FAILURE)
 		return (EXIT_FAILURE);
 	if (start_routine(philo, &param) == EXIT_FAILURE)
 		return (clean_data(&philo, &param), EXIT_FAILURE);
-	usleep(1000);
+	usleep(TIME_DELAY_MONITORING_US);
 	start_global_monitoring_thread(philo, &param);
 	terminate_threads(&param, philo);
 	clean_data(&philo, &param);

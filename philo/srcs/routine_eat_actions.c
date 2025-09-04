@@ -15,13 +15,13 @@
 
 static int	drop_fork(pthread_mutex_t *fork_mutex)
 {
-	int	retval;
+	int	return_value;
 
-	retval = EXIT_FAILURE;
+	return_value = EXIT_FAILURE;
 	while (1)
 	{
-		retval = pthread_mutex_unlock(fork_mutex);
-		if (retval == EXIT_SUCCESS)
+		return_value = pthread_mutex_unlock(fork_mutex);
+		if (return_value == EXIT_SUCCESS)
 			break ;
 	}
 	return (EXIT_SUCCESS);
@@ -29,13 +29,13 @@ static int	drop_fork(pthread_mutex_t *fork_mutex)
 
 static int	pick_fork(t_philo *philo, pthread_mutex_t *fork_mutex, int id_philo)
 {
-	int	retval;
+	int	return_value;
 
-	retval = EXIT_FAILURE;
+	return_value = EXIT_FAILURE;
 	while (1)
 	{
-		retval = pthread_mutex_lock(fork_mutex);
-		if (retval == EXIT_SUCCESS)
+		return_value = pthread_mutex_lock(fork_mutex);
+		if (return_value == EXIT_SUCCESS)
 			break ;
 	}
 	print_status(philo, id_philo, "has taken a fork\n");
@@ -67,13 +67,25 @@ int	drop_two_forks(t_philo *philo, int id)
 	return (EXIT_FAILURE);
 }
 
+/**
+ * @brief Get two forks in right order.
+ * Philo_num is odd:
+ * odd philo_id eat first, even philo_id eat after.
+ * odd philo_id get left_fork first, even philo_id get right_fork firstly.
+ * philo_num is even:
+ * odd philo_id eat first, even philo_id eat after.
+ * odd philo_id get left_fork first, even philo_id get right_fork firstly.
+ * @param philo philo's structure
+ * @param id philo's own id from 1 to philo_num
+ * @return EXIT_SUCCESS or EXIT_FAILURE.
+ */
 int	get_two_forks(t_philo *philo, int id)
 {
 	pthread_mutex_t	*left_fork;
 	pthread_mutex_t	*right_fork;
 
 	left_fork = &philo->fork_mutex;
-	if (id == 0)
+	if (id == 1)
 		right_fork = &(philo + (philo->prog_data->philo_num - 1))->fork_mutex;
 	else
 		right_fork = &(philo - 1)->fork_mutex;

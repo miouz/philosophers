@@ -65,7 +65,7 @@ int	print_status(t_philo *philo, int id, char *str)
 		pthread_mutex_lock(&philo->prog_data->print_mutex);
 		if (get_time_stamps_ms(&time_stamps_ms) == EXIT_FAILURE)
 			return (stop_simulation(philo), EXIT_FAILURE);
-		printf("%lld %d %s", time_stamps_ms, id + 1, str);
+		printf("%lld %d %s", time_stamps_ms, id, str);
 		pthread_mutex_unlock(&philo->prog_data->print_mutex);
 	}
 	return (EXIT_SUCCESS);

@@ -23,15 +23,16 @@
 # include <stdio.h>
 
 /*===============================ERROR MESSAGES===============================*/
-# define ARGS_ERROR "Error: need 4 or 5 NUMERIC arguments: [number_of_philosophers]\
+# define ERROR_ARGS_NO_CONFORM "Error: need 4 or 5 NUMERIC arguments: [number_of_philosophers]\
  [time_to_die] [time_to_eat] [time_to_sleep]\
  [number_of_times_each_philosopher_must_eat]\n"
-# define ARGS_ERROR_NOPHILO "Error: need at least 1 philo -.-\n"
-# define ARGS_ERROR_ZERO "Error: need no zero value for correct simulation\n"
-# define MALLOC_ERROR "Error: Malloc failed\n"
-# define TIME_ERROR "Error: Can't get time\n"
-# define THREAD_ERROR_CREAT "Error : Can't creat thread\n"
-# define EAT_ERROR "Error : Can't begin to eat\n"
+# define ERROR_ARGS_NOPHILO "Error: need at least 1 philo -.-\n"
+# define ERROR_ARGS_ZERO "Error: need no zero value for correct simulation\n"
+# define ERROR_MALLOC "Error: Malloc failed\n"
+# define ERROR_TIME "Error: Can't get time\n"
+# define ERROR_THREAD "Error : Can't creat thread\n"
+# define ERROR_EAT "Error : Can't begin to eat\n"
+# define ERROR_MUTEX "Error : Can't init or destroy mutex\n"
 
 /*===============================MONITORING MESSAGES==========================*/
 # define SLEEP "is sleeping\n"
@@ -39,6 +40,10 @@
 # define EAT "is eating\n"
 # define FORKED "has taken a fork\n"
 # define DIE "died\n"
+
+/*====================================VALUES==================================*/
+# define TIME_DELAY_MONITORING_US 1000
+# define TIME_INTERVAL_CHECK_IF_START_SIM 200
 
 /*===============================STRUCTS======================================*/
 

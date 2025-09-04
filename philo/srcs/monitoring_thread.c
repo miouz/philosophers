@@ -94,6 +94,6 @@ int	start_global_monitoring_thread(t_philo *philo, t_params *prog_data)
 	ret = pthread_create(&prog_data->monitoring_thread_id, NULL,
 			global_monitoring_thread, (void *)philo);
 	if (ret < 0)
-		return (error_msg(THREAD_ERROR_CREAT), EXIT_FAILURE);
+		return (error_msg(ERROR_THREAD), EXIT_FAILURE);
 	return (EXIT_SUCCESS);
 }
