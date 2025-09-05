@@ -48,7 +48,7 @@ static void	set_order_for_first_meal_take(t_philo *philo)
 	{
 		if (is_even(philo->prog_data->philo_num) == false
 			&& philo->philo_id == philo->prog_data->philo_num)
-			usleep(philo->prog_data->time_to_eat * 2500);
+			usleep(philo->prog_data->time_to_eat * 2000);
 		else if (is_even(philo->philo_id) == true)
 			usleep(philo->prog_data->time_to_eat * 800);
 	}

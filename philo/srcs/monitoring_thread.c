@@ -12,9 +12,9 @@
 
 #include "../includes/philo.h"
 
-static int	annouce_philo_died(t_philo *philo, int index)
+static int	annouce_philo_died(t_philo *philo, int id)
 {
-	print_status(philo, index, DIE);
+	print_status(philo, id, DIE);
 	stop_simulation(philo);
 	return (EXIT_SUCCESS);
 }
@@ -38,7 +38,7 @@ static bool	one_philo_died_or_full(t_philo *philo, bool *philo_is_full)
 		pthread_mutex_unlock(
 			&philo[index].last_meal_time_and_times_eaten_mutex);
 		if (time_since_last_meal > philo->prog_data->time_to_die)
-			return (annouce_philo_died(philo, index), true);
+			return (annouce_philo_died(philo, index + 1), true);
 		index++;
 	}
 	return (false);

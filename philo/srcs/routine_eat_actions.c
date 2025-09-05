@@ -48,11 +48,11 @@ int	drop_two_forks(t_philo *philo, int id)
 	pthread_mutex_t	*right_fork;
 
 	left_fork = &philo->fork_mutex;
-	if (id == 0)
+	if (id == 1)
 		right_fork = &(philo + (philo->prog_data->philo_num - 1))->fork_mutex;
 	else
 		right_fork = &(philo - 1)->fork_mutex;
-	if (is_even(id) == true)
+	if (is_even(id) == false)
 	{
 		if (drop_fork(left_fork) == EXIT_SUCCESS
 			&& drop_fork(right_fork) == EXIT_SUCCESS)
