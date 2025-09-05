@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "../includes/philo.h"
+#include <stdbool.h>
 
 int	routine_sleep(t_philo *philo)
 {
@@ -19,17 +20,33 @@ int	routine_sleep(t_philo *philo)
 	return (EXIT_SUCCESS);
 }
 
+/**
+ * @brief think routine.
+ * Force think time for odd philo_num to asynchronise eating.
+ * -if time_to_eat > time_to_sleep
+ *  force a think time 1.1 * (time_to_eat - time_to_sleep) instead of eating.
+ * -if time_to_eat = time_to_sleep
+ *  force a think time 1ms to instead of eating to asynchronise
+ * @param philo struct philo
+ * @return EXIT_SUCCESS or EXIT_FAILURE
+ */
 int	routine_think(t_philo *philo)
 {
 	long int	time_to_think;
 
-	time_to_think = philo->prog_data->time_to_eat * 2
-		- philo->prog_data->time_to_sleep;
-	if (time_to_think < 0)
-		time_to_think = 0;
+	time_to_think = 0;
+	if (is_even(philo->prog_data->philo_num) == false)
+	{
+		if (philo->prog_data->time_to_eat > philo->prog_data->time_to_sleep)
+			time_to_think = philo->prog_data->time_to_eat
+				- philo->prog_data->time_to_sleep;
+		if (philo->prog_data->time_to_eat == philo->prog_data->time_to_sleep)
+			time_to_think = TIME_TO_THINK;
+	}
 	print_status(philo, philo->philo_id, THINK);
-	// if (is_even(philo->prog_data->philo_num) == false && time_to_think > 0)
-	// 	segments_usleep(philo, (unsigned int)time_to_think * 0.4);
+	if (is_even(philo->prog_data->philo_num) == false && time_to_think > 0)
+		segments_usleep(philo, (unsigned int)time_to_think
+			* PERCENTAGE_TIME_TO_THINK);
 	return (EXIT_SUCCESS);
 }
 
