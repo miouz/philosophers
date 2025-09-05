@@ -49,14 +49,14 @@ static void	set_order_for_first_meal_take(t_philo *philo)
 		if (is_even(philo->prog_data->philo_num) == true)
 		{
 			if (is_even(philo->philo_id) == true)
-				usleep(philo->prog_data->time_to_eat * 800);
+				segments_usleep(philo, philo->prog_data->time_to_eat * 0.9);
 		}
 		if (is_even(philo->prog_data->philo_num) == false)
 		{
 			if (philo->philo_id == philo->prog_data->philo_num)
-				usleep(philo->prog_data->time_to_eat * 1900);
+				segments_usleep(philo, philo->prog_data->time_to_eat * 1.9);
 			else if (is_even(philo->philo_id) == true)
-				usleep(philo->prog_data->time_to_eat * 800);
+				segments_usleep(philo, philo->prog_data->time_to_eat * 0.9);
 		}
 	}
 }
@@ -76,7 +76,7 @@ static void	*thread_routine(void *arg)
 	philo = (t_philo *)arg;
 	while (1)
 	{
-		usleep(TIME_INTERVAL_CHECK_IF_START_SIM);
+		usleep(TIME_INTERVAL_CHECK_IF_START_SIM_US);
 		if (should_begin_to_eat(philo) == true)
 			break ;
 	}
