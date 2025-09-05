@@ -26,5 +26,5 @@ jobs:
         
   # build project
       - name: Build project
-        run: make
+        run: .. make
       
