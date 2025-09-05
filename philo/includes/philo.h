@@ -43,7 +43,12 @@
 
 /*====================================VALUES==================================*/
 # define TIME_DELAY_MONITORING_US 1000
-# define TIME_INTERVAL_CHECK_IF_START_SIM 200
+# define TIME_INTERVAL_CHECK_IF_START_SIM_US 200
+# define TIME_INTERVAL_CHECK_IF_STOP_SIM_US 1000
+# define TIME_INTERVAL_CHECK_IF_START_MONITORING_US 800
+# define TIME_INTERVAL_MONITORING_US 2000
+# define PERCENTAGE_TIME_TO_THINK 1.1
+# define TIME_TO_THINK 2
 
 /*===============================STRUCTS======================================*/
 

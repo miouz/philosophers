@@ -11,9 +11,6 @@
 /* ************************************************************************** */
 
 #include "../includes/philo.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <sys/time.h>
 
 int	segments_usleep(t_philo *philo, unsigned int time)
 {
@@ -23,7 +20,7 @@ int	segments_usleep(t_philo *philo, unsigned int time)
 	gettimeofday(&start_time, NULL);
 	while (should_stop_simulation(philo) == false)
 	{
-		usleep(1000);
+		usleep(TIME_INTERVAL_CHECK_IF_STOP_SIM_US);
 		gettimeofday(&current_time, NULL);
 		if (get_time_elapsed_ms(&start_time, &current_time) >= time)
 			break ;

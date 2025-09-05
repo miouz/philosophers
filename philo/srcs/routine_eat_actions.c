@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "../includes/philo.h"
-#include <stdbool.h>
 
 static int	drop_fork(pthread_mutex_t *fork_mutex)
 {

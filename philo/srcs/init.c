@@ -12,11 +12,8 @@
 
 #include "../includes/philo.h"
 
-static int	init_philos(t_philo **philo, t_params *prog_data)
+static int	init_philos(t_philo **philo, t_params *prog_data, int struct_index)
 {
-	int	struct_index;
-
-	struct_index = 0;
 	*philo = malloc(prog_data->philo_num * sizeof(t_philo));
 	if (*philo == NULL)
 		return (error_msg(ERROR_MALLOC), EXIT_FAILURE);
@@ -74,7 +71,7 @@ int	init_params_and_philos(t_philo **philo, t_params *prog_data, char **arg)
 {
 	if (init_params(prog_data, arg) == EXIT_FAILURE)
 		return (EXIT_FAILURE);
-	if (init_philos(philo, prog_data) == EXIT_FAILURE)
+	if (init_philos(philo, prog_data, 0) == EXIT_FAILURE)
 		return (pthread_mutex_destroy(&prog_data->print_mutex),
 			pthread_mutex_destroy(&prog_data->stop_sim_mutex), EXIT_FAILURE);
 	return (EXIT_SUCCESS);

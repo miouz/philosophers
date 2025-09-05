@@ -71,7 +71,7 @@ static void	*global_monitoring_thread(void *arg)
 	memset(philo_is_full, false, philo->prog_data->philo_num);
 	while (1)
 	{
-		usleep(2000);
+		usleep(TIME_DELAY_MONITORING_US);
 		if (one_philo_died_or_full(philo, philo_is_full) == true
 			|| (philo->prog_data->times_must_eat > -1
 				&& all_philos_are_full(philo_is_full,
@@ -87,7 +87,7 @@ int	start_global_monitoring_thread(t_philo *philo, t_params *prog_data)
 
 	while (1)
 	{
-		usleep(800);
+		usleep(TIME_INTERVAL_CHECK_IF_START_MONITORING_US);
 		if (should_begin_to_eat(philo) == true)
 			break ;
 	}
