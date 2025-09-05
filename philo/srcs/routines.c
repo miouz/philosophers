@@ -21,7 +21,15 @@ int	routine_sleep(t_philo *philo)
 
 int	routine_think(t_philo *philo)
 {
+	long int	time_to_think;
+
+	time_to_think = philo->prog_data->time_to_eat * 2
+		- philo->prog_data->time_to_sleep;
+	if (time_to_think < 0)
+		time_to_think = 0;
 	print_status(philo, philo->philo_id, THINK);
+	// if (is_even(philo->prog_data->philo_num) == false && time_to_think > 0)
+	// 	segments_usleep(philo, (unsigned int)time_to_think * 0.4);
 	return (EXIT_SUCCESS);
 }
 

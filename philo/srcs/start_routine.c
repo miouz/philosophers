@@ -46,11 +46,18 @@ static void	set_order_for_first_meal_take(t_philo *philo)
 {
 	if (philo->prog_data->philo_num != 1)
 	{
-		if (is_even(philo->prog_data->philo_num) == false
-			&& philo->philo_id == philo->prog_data->philo_num)
-			usleep(philo->prog_data->time_to_eat * 2000);
-		else if (is_even(philo->philo_id) == true)
-			usleep(philo->prog_data->time_to_eat * 800);
+		if (is_even(philo->prog_data->philo_num) == true)
+		{
+			if (is_even(philo->philo_id) == true)
+				usleep(philo->prog_data->time_to_eat * 800);
+		}
+		if (is_even(philo->prog_data->philo_num) == false)
+		{
+			if (philo->philo_id == philo->prog_data->philo_num)
+				usleep(philo->prog_data->time_to_eat * 1900);
+			else if (is_even(philo->philo_id) == true)
+				usleep(philo->prog_data->time_to_eat * 800);
+		}
 	}
 }
 
