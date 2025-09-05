@@ -15,7 +15,7 @@
 MAKE_CMD ?= $(MAKE)
 CC = cc
 CFLAGS = -Wall -Wextra -Werror -pthread
-DEBUG_FLAGS = -g3 
+# DEBUG_FLAGS = -g3 
 #ASAN_FLAGS = -fsanitize=thread
 # ASAN_FLAGS = -fsanitize=address
 
@@ -50,14 +50,11 @@ RESET = \033[0m
 all: $(NAME)
 
 $(NAME): $(OBJS_MANDATORY)
-	$(CC) $(CFLAGS) $(DEBUG_FLAGS) -I $(INCLUDE_DIR) $(SRCS_MANDATORY) -o $(NAME)
+	$(CC) $(CFLAGS) -I $(INCLUDE_DIR) $(SRCS_MANDATORY) -o $(NAME)
 	@echo "$(GREEN)Woah the mandatory is build(ﾉ◕ヮ◕)ﾉ$(RESET)"
 
 #---clean🍻
 .PHONY: clean fclean re bonus debug all
-
-debug:fclean
-	$(MAKE) MAKE_CMD="make debug"
 
 clean:
 	rm -f $(OBJS_MANDATORY)
